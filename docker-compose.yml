@@ -1,0 +1,25 @@
+version: '3.4'
+
+services:
+  demoappdb:
+    container_name: app-db
+    image: mcr.microsoft.com/mssql/server:2022-latest
+    ports:
+        - 8002:1433
+    environment: 
+        - ACCEPT_EULA=Y
+        - SA_PASSWORD=password@12345#
+  generatecifapi:
+  container_name: KongGenerateCifApi
+    image: ${DOCKER_REGISTRY-}generatecifapi
+    build:
+      context: .
+      dockerfile: GenerateCifApi/Dockerfile
+    ports:
+      - 8001:80
+    depends_on:
+        - generatecifapi
+    environment:
+        - DB_HOST=demoappdb
+        - DB_NAME=UserDetails
+        - DB_SA_PASSWORD=password@12345#
